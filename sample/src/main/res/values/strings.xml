@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">FieldValidatorProject</string>
+
+    <!-- Hints for registration fields -->
+    <string name="name_hint">Enter your name</string>
+    <string name="surname_hint">Enter your surname</string>
+    <string name="credentials_hint">Enter your credentials</string>
+    <string name="username_hint">Pick a username</string>
+    <string name="email_hint">Enter your email</string>
+    <string name="password_hint">Enter your password</string>
+    <string name="validate_button_name">Validate</string>
+    <string name="phone_number_hint">Enter your phone number</string>
+    <string name="credit_card_hint">Enter your credit card number</string>
+
+    <!-- Errors for registration fields -->
+    <string name="name_validation_error">Name not valid!</string>
+    <string name="surname_validation_error">Surname not valid!</string>
+    <string name="credentials_validation_error">Credentials not valid!</string>
+    <string name="username_validation_error">Username not valid!</string>
+    <string name="email_validation_error">Email not valid!</string>
+    <string name="phone_number_validation_error">Phone number not valid!</string>
+    <string name="credit_card_validation_error">Credit card not valid!</string>
+    <string name="password_validation_error">Password not valid!</string>
+
+    <!-- Sample data -->
+    <string name="name_sample">François</string>
+    <string name="surname_sample">ชัยอนันต์</string>
+    <string name="credentials_sample">阿卜德哈伊姆 الولِي</string>
+    <string name="username_sample">JakeWharton444</string>
+    <string name="email_sample">my.email@yahoo.com</string>
+    <string name="phone_number_sample">991234567</string>
+    <string name="credit_card_sample">4716871490419265</string>
+    <string name="password_sample">Password%1</string>
+</resources>
