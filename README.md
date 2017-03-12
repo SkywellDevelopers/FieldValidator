@@ -2,9 +2,18 @@
 
 ![](http://i.imgur.com/gApYZgg.png?1)  ![](http://i.imgur.com/1Q6ZYHk.png?1)
 
-Небольшая (пока что) библиотека для валидации полей. Хотелось бы собрать фидбек о юзабельности.
-Использует проверенные регулярные выражения. Методы, которые оканчиваются на **Eager** для того, чтобы
-не писать что-то вроде:
+A small Android library for field validation. Methods that ends with **Eager**
+will firstly check, if a passed String value is not Null or Empty, so we could write validation checks like:
+
+```
+if(FieldValidator.isNameValid(name)) {
+    ...
+} else {
+    ...
+}
+```
+
+Instead of:
 
 ```
 if(!TextUtils.isEmpty(name)) {
@@ -16,90 +25,83 @@ if(!TextUtils.isEmpty(name)) {
 }
 ```
 
-А сразу:
-```
-if(FieldValidator.isNameValid(name)) {
-    ...
-} else {
-    ...
-}
-```
+You could check examples of valid/not valid values in [tests](https://github.com/SkywellDevelopers/FieldValidator/blob/master/fieldvalidatorlib/src/test/java/ua/com/skywell/fieldvalidator/FieldsDataFactory.java).
+Example of usage in the [sample](https://github.com/SkywellDevelopers/FieldValidator/blob/master/sample/src/main/java/ua/com/skywell/fieldvalidatorproject/MainActivity.java).
 
+#### What you could validate:
 
-Валидные и не валидные значения полей можно посмотреть в [тестах](https://bitbucket.org/kchernenko_sw/fieldvalidatorporject/src/581dabe36af0af6b2fba57f94e2c12c792b8a1d8/fieldvalidator/src/test/java/ua/com/skywell/fieldvalidator/FieldsDataFactory.java?at=master&fileviewer=file-view-default).
-Пример использования [тут](https://bitbucket.org/kchernenko_sw/fieldvalidatorporject/src/581dabe36af0af6b2fba57f94e2c12c792b8a1d8/app/src/main/java/ua/com/skywell/fieldvalidatorproject/MainActivity.java?at=master&fileviewer=file-view-default#MainActivity.java-28).
-Что можно провалидировать:
+1. Name/Middle name/Surname in <b>Unicode</b>. It will check if a passed String does not contain special characters (#,$,& and so on), numbers and/or whitespaces:
 
-1. Имя/Отчество/Фамилию в юникоде. Исключает наличие специальных символов и цифр. Для случаев, когда это отдельные поля:
+    **a)** Method **isNameValid(String value)**
 
-    **a)** Метод **isNameValid(String string)**
+    **b)** Method **isNameValidEager(String value)** - firstly it will check if a value is not **null** or **empty**, than - if it's valid.
 
-    **б)** Метод **isNameValidEager(String string)** - сначала проверит передаваемую строку на **null** и на **пустоту**, потом на валидность.
+2. Credentials in <b>Unicode</b> (if you need check Name + Surname as one field). It will check if a String does not contain special characters (#,$,& and so on) and/or numbers:
 
-2. Credentials (грубо говоря ФИО) в юникоде. Исключает наличие специальных символов и цифр. Для случаев, когда, например, имя и фамилия - одно поле.
-Отличается от первого варианта тем, что в первом варианте не может быть пробелов:
+    **a)** Method **isCredentialsValid(String value)**
 
-    **a)** Метод **isCredentialsValid(String string)**
+    **b)** Method **isCredentialsValidEager(String value)** - firstly it will check if a value is not **null** or **empty**, than - if it's valid.
 
-    **б)** Метод **isCredentialsValidEager(String string)** - сначала проверит передаваемую строку на **null** и на **пустоту**, потом на валидность.
+3. Username/Nickname in <b>ASCII</b>. It will check if a String does not contain <b>some</b> special characters (#,&,* and so on) and that the passed value does not <b>starts</b> or <b>ends</b> with allowed special characters.
 
-3. Username/Nickname (логин) пользователя в ASCII. Исключает использование некоторых специальных символов (#,&,* и т.д.), проверяет, чтобы логин не начинался и не заканчивался на разрешённые спец. символы:
+    **a)** Method **isUsernameValid(String value)**
 
-    **a)** Метод **isUsernameValid(String string)**
+    **b)** Method **isUsernameValidEager(String value)** - firstly it will check if a value is not **null** or **empty**, than - if it's valid.
 
-    **б)** Метод **isUsernameValidEager(String string)** - сначала проверит передаваемую строку на **null** и на **пустоту**, потом на валидность.
+4. Email in <b>ASCII</b>. It will check if a passed String does not contain special characters (#,$,& and so on) and contains <b>@</b> character with domain name.
 
-4. Email пользователя в ASCII. Исключает использование спец. символов, проверяет правильность написания (присутствие знака @ и доменного имени и т.д.):
+    **a)** Method **isEmailValid(String value)**
 
-    **a)** Метод **isEmailValid(String string)**
+    **b)** Method **isEmailValidEager(String value)** - firstly it will check if a value is not **null** or **empty**, than - if it's valid.
 
-    **б)** Метод **isEmailValidEager(String string)** - сначала проверит передаваемую строку на **null** и на **пустоту**, потом на валидность.
+5. Password in <b>ASCII</b>. The password must follow next rules:
 
-5. Пароль пользователя в ASCII. Накладывает следующие ограничения на пароль:
+        1) Length is from 6 to 20 symbols;
 
-        1) Должен быть от 6 до 20 символов;
+        2) Minimum 1 upper case letter;
 
-        2) Должен содержать минимум одну заглавную букву;
+        3) Minimum 1 lower case letter;
 
-        3) Должен содержать минимум одну строчную букву;
+        4) Minimum 1 digit;
 
-        4) Должен содержать минимум одну цифру;
+        5) Minimum 1 special symbol (#,!,* - and so on);
 
-        5) Должен содержать минимум один спец. символ (#,!,* - и т.д.);
+    Methods:
 
-    Методы:
+     **a)** Method **isPasswordValid(String value)**
 
-    **a)** Метод **isPasswordValid(String string)**
+     **b)** Method **isPasswordValidEager(String value)** - firstly it will check if a value is not **null** or **empty**, than - if it's valid.
 
-    **б)** Метод **isPasswordValidEager(String string)** - сначала проверит передаваемую строку на **null** и на **пустоту**, потом на валидность.
+#### Luhn algorithm [see. Wikipedia](https://en.wikipedia.org/wiki/Luhn_algorithm):
+    The Luhn algorithm is a simple checksum formula used to validate a variety of identification numbers, such as credit card numbers, IMEI numbers, National Provider Identifier numbers in the US, Canadian Social Insurance Numbers, and Greek Social Security Numbers (ΑΜΚΑ). It is not intended to be a cryptographically secure hash function; it was designed to protect against accidental errors, not malicious attacks. Most credit cards and many government identification numbers use the algorithm as a simple method of distinguishing valid numbers from mistyped or otherwise incorrect numbers.
 
-#### Алгоритм Луна [cм. Wikipedia](https://ru.wikipedia.org/wiki/%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC_%D0%9B%D1%83%D0%BD%D0%B0):
-    Алгоритм Луна (англ. Luhn algorithm) — алгоритм вычисления контрольной цифры номера пластиковой карты в соответствии со стандартом ISO/IEC 7812. Не является криптографическим средством, а предназначен в первую очередь для выявления ошибок, вызванных непреднамеренным искажением данных (например, при ручном вводе номера карты, при приёме данных о номере социального страхования по телефону). Позволяет лишь с некоторой степенью достоверности судить об отсутствии ошибок в блоке цифр, но не даёт возможности нахождения и исправления обнаруженной неточности.
+6. Basic credit card validation:
 
-6. Проверка кредитных карт на первичную валидность:
+     **a)** Method **isCreditCardValid(String value)**
 
-     **a)** Метод **isCreditCardValid(String string)**
+     **b)** Method **isCreditCardValidEager(String value)** - firstly it will check if a value is not **null** or **empty**, than - if it's valid.
 
-     **б)** Метод **isCreditCardValidEager(String string)** - сначала проверит передаваемую строку на **null** и на **пустоту**, потом на валидность.
+#### Helper methods to work with Strings:
+ 1. **isNotEmpty(String value)** - returns **true**, if a value is  **not null** and **not empty**.
+ 2. **isEmpty(String value)** - returns **true**, if a value is **null or empty**.
+ 3. **isDigits(String value)** - checks if a value contains only digits.
+ 4. **isDigits(String value, int amount)** - checks if a value contains only digits with specific amount, for example ("12345", 5) - returns **true**.
+ 5. **isDigitsEager(String value)** - the same as <b>#3</b> but, firstly it will check if a value is not **null** or **empty**, than - if it's valid.
+ 6. **isDigitsEager(String value, int amount)** - the same as <b>#4</b> but, firstly it will check if a value is not **null** or **empty**, than - if it's valid.
 
- P.S.: можно добавить метод валидации номера соц. страхования.
+#### Mobile numbers validation:
 
-#### Дополнительные методы работы со строками:
- 1. **isNotEmpty(String string)** - вернёт **true**, если строка  **не null** и **не пустая**.
- 2. **isEmpty(String string)** - вернёт **true**, если строка **null или пустая**.
- 3. **isDigits(String string)** - проверяет содержатся ли в строке только цифры. Может быть полезным для первичной проверки номера телефона.
- 4. **isDigits(String string, int amount)** - проверяет содержатся ли в строке только цифры с заданным количеством, например ("12345", 5) - вернёт **true**. Может быть полезным для первичной проверки номера телефона.
- 5. **isDigitsEager(String string)** - то же самое, что и п. 3, только сначала проверит передаваемую строку на **null** и на **пустоту**, потом на валидность.
- 6. **isDigitsEager(String string, int amount)** - то же самое, что и п. 4, только сначала проверит передаваемую строку на **null** и на **пустоту**, потом на валидность.
+If you need such validation (country code + operator code + formatting). We would recommend you to use next libraries:
 
-#### Валидация номеров:
-Тема довольно нетривиальная, если нужна точная валидация (код страны + код оператора + форматирование). Я знаю несколько инструментов для решения такой задачи:
+1. [libphonenumber](https://github.com/googlei18n/libphonenumber) - a big library from Google.
+2. [libphonenumber-android](https://github.com/MichaelRocks/libphonenumber-android) - Google's **libphonenumber** port special for Android (shrank methods count).
+3. [Phonematter](https://github.com/terrakok/Phonematter) - phone number checking and formatting from official Telegram Android application.
 
-1. [libphonenumber](https://github.com/googlei18n/libphonenumber) - проект от Google. Есть версия для Java.
-2. [libphonenumber-android](https://github.com/MichaelRocks/libphonenumber-android) - порт этой библиотеки специально под Android (урезанно количество методов).
-3. [Phonematter](https://github.com/terrakok/Phonematter) - вырезанная реализация проверки и форматирования номеров с Telegram и обвёрнута в библиотеку.
+#### Download:
 
-## Лицензия
+    compile "ua.com.skywell.fieldvalidator:FieldValidator:1.0.0"
+
+## License
 
 ```
     Copyright 2016 Skywell LLC.
